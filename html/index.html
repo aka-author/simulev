@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta 
+            name="viewport" 
+            content="width=device-width, initial-scale=1">
+        <meta 
+            charset="utf-8">
+        <meta
+            name="verinfo"
+            content="0.01h">
+        <title>Cooperators vs. Freeriders Model</title>
+        <link rel="icon" type="image/svg+xml" href="plateicon.svg">
+        <link 
+            rel="stylesheet" 
+            href="main.css">
+        <script 
+            src="workers.js"></script>
+        <script 
+            src="models.js"></script>
+        <script 
+            src="views.js"></script>
+        <script 
+            src="controllers.js"></script>
+        <script 
+            src="gameplay.js"></script>
+    </head>
+    <body>
+        <div 
+            id="divPageHeader">
+            <h1>Cooperators vs. Freeriders</h1>
+        </div>
+    
+        <div 
+            id="divConsole">
+            
+            <div 
+                id="divLaboratoryTable"></div>
+    
+            <div 
+                id="divControlPanel">
+
+                <!-- Shortcuts -->
+                <div 
+                    id="divTabShortcuts">
+                    <span 
+                        id="spanTabShortcutEnvironment" 
+                        onclick="selectTab('Environment')" 
+                        class="cpTabShortcut"
+                        style="text-decoration: none; cursor: default">Origin</span>   
+                    <span 
+                        id="spanTabShortcutCooperators" 
+                        onclick="selectTab('Cooperators')" 
+                        class="cpTabShortcut altruist"
+                        style="text-decoration: underline; cursor: pointer">Coop<span class="fullscr">erators</span><span class="smallscr">.</span></span>
+                    <span 
+                        id="spanTabShortcutFreeriders" 
+                        onclick="selectTab('Freeriders')" 
+                        class="cpTabShortcut egoist"
+                        style="text-decoration: underline; cursor: pointer">Freer<span class="fullscr">iders</span><span class="smallscr">.</span></span>
+                    <span 
+                        id="spanTabShortcutSimulation" 
+                        onclick="selectTab('Simulation')" 
+                        class="cpTabShortcut"
+                        style="text-decoration: underline; cursor: pointer">Sett<span class="fullscr">ings</span><span class="smallscr">.</span></span>
+                    <span 
+                        id="spanTabShortcutReport" 
+                        onclick="selectTab('Report')" 
+                        class="cpTabShortcut"
+                        style="text-decoration: underline; cursor: pointer">Report</span>
+                </div>
+
+                <form>
+
+                    <!-- Environment -->
+                    <div 
+                        id="divTabEnvironment"
+                        class="cpTab">
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Solution</h2>
+                            </div> 
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div
+                                    class="cpFormField">
+                                    <label>Sucrose initial saturation</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("inputSurcoseInitialConcentration", 0.2));
+                                        </script>  
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Population</h2>
+                            </div>
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div
+                                    class="cpFormField">
+                                    <label>Initial share of cooperators</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage11Select("inputAltruistsInitialShare", 0.8));
+                                        </script>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cooperators -->
+                    <div 
+                        id="divTabCooperators" 
+                        class="cpTab"
+                        style="display: none">
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Metabolism</h2>
+                            </div>
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div
+                                    class="cpFormField">
+                                    <label>Share of time a cell dedicates to producing glucose</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("inputAltruisticTimeShare", 0.9));
+                                        </script>
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Share of produced glucose a cell consumes immediately</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage11Select("inputAltruisticInterestShare", 0.01));
+                                        </script>
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Number of glucose units enough for creating a new cell</label>
+                                    <span 
+                                        class="input">
+                                        <input 
+                                            id="inputAltruistGlucoseValue" 
+                                            size="4em" 
+                                            value="10"
+                                            oninput="validatePositiveInt('inputAltruistGlucoseValue')">
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Share of glucose a cell is able to use depending on the saturation of the solution with glucose (S<sub>g</sub>)</label>
+                                    <span 
+                                        class="input">
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label 
+                                        style="padding-left: 2em">S<sub>g</sub> &le; 1%</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("selectAltruisticGlucoseUsage1", 1));
+                                        </script>
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label 
+                                        style="padding-left: 2em">1% &lt; S<sub>g</sub> &le; 10%</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("selectAltruisticGlucoseUsage10", 0.8));
+                                        </script>
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label 
+                                        style="padding-left: 2em">10% &lt; S<sub>g</sub> &le; 100%</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("selectAltruisticGlucoseUsage100", 0.2));
+                                        </script>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Freeriders -->
+                    <div 
+                        id="divTabFreeriders" 
+                        class="cpTab"
+                        style="display: none">
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Metabolism</h2>
+                            </div>
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div
+                                    class="cpFormField">
+                                    <label>Share of time a cell dedicates to producing glucose</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("inputEgoisticTimeShare", 0.0));
+                                        </script>
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Share of produced glucose a cell consumes immediately</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage11Select("inputEgoisticInterestShare", 0.05));
+                                        </script>
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Number of glucose units enough for creating a new cell</label>
+                                    <span 
+                                        class="input">
+                                        <input 
+                                            id="inputEgoistGlucoseValue" 
+                                            size="4em" 
+                                            value="8"
+                                            oninput="validatePositiveInt('inputEgoistGlucoseValue')">
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Share of glucose a cell is able to use depending on the saturation of the solution with glucose (S<sub>g</sub>)</label>
+                                    <span 
+                                        class="input">
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label style="padding-left: 2em">S<sub>g</sub> &le; 1%</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("selectEgoisticGlucoseUsage1", 1));
+                                        </script>
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label style="padding-left: 2em">1% &lt; S<sub>g</sub> &le; 10%</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("selectEgoisticGlucoseUsage10", 0.8));
+                                        </script>
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label style="padding-left: 2em">10% &lt; S<sub>g</sub> &le; 100%</label>
+                                    <span 
+                                        class="input">
+                                        <script>
+                                            document.writeln(assemblePercentage10Select("selectEgoisticGlucoseUsage100", 0.2));
+                                        </script>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulation -->
+                    <div 
+                        id="divTabSimulation" 
+                        class="cpTab"
+                        style="display: none">
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Size of Simulation</h2>
+                            </div>    
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div
+                                    class="cpFormField">
+                                    <label>Number of cells we see in the microscope</label>
+                                    <span 
+                                        class="input">
+                                        <input 
+                                            id="inputVisibleCellsNumber" 
+                                            size="6em" 
+                                            value="100"
+                                            oninput="validatePositiveInt('inputVisibleCellsNumber')">
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Maximum number of simulation steps</label>
+                                    <span 
+                                        class="input">
+                                        <input 
+                                            id="inputSimulationStepsNumber" 
+                                            size="6em" 
+                                            value="5000"
+                                            oninput="validatePositiveInt('inputSimulationStepsNumber')">
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Stop when sucrose and glucose are over</label>
+                                    <span 
+                                        class="input">
+                                        <input 
+                                            id="inputAutostop" 
+                                            type="checkbox"
+                                            checked>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Report Format Settings</h2>
+                            </div>
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div 
+                                    class="cpFormField">
+                                    <label>Number of records in a log</label>
+                                    <span 
+                                        class="input">
+                                        <input 
+                                            id="inputReportRowsNumber" 
+                                            size="6em" 
+                                            value="10"
+                                            oninput="validatePositiveInt('inputReportRowsNumber')">
+                                    </span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label>Decimal point symbol</label>
+                                    <span 
+                                        class="input">
+                                        <select 
+                                            id="inputDecimalPoint">
+                                            <option value="." selected>.</option>
+                                            <option value=",">,</option>
+                                        </select>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Final Jingle</h2>
+                            </div>
+                            
+                        </div>
+                        <div style="margin-top: 5pt">
+                            <audio controls muted id="audioTada" style="height: 18pt; font-size: 6pt">
+                                <source src="tada.mp3" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    </div>
+                    
+
+                    <!-- Report -->
+                    <div 
+                        id="divTabReport" 
+                        class="cpTab"
+                        style="display: none">
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Solution</h2>
+                            </div>
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div 
+                                    class="cpFormField">
+                                    <label class="outputNumeric">Sucrose saturation</label>
+                                    <span id="spanSucrose" class="outputNumeric"></span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label 
+                                        class="outputNumeric">Glucose saturation</label>
+                                    <span 
+                                        id="spanGlucose" 
+                                        class="outputNumeric"></span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label 
+                                        class="outputNumeric">Fructose saturation</label>
+                                    <span 
+                                        id="spanFructose" 
+                                        class="outputNumeric"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Population</h2>
+                            </div>
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div 
+                                    class="cpFormField">
+                                    <label 
+                                        class="outputNumeric">Cooperators</label>
+                                    <span 
+                                        id="spanCooperators" 
+                                        class="outputNumeric"></span>
+                                </div>
+                                <div 
+                                    class="cpFormField">
+                                    <label 
+                                        class="outputNumeric">Freeriders</label>
+                                    <span 
+                                        id="spanFreeriders" 
+                                        class="outputNumeric"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="cpFormFieldBlock">
+                            <div 
+                                class="cpFormFieldBlockHeader">
+                                <h2>Growth</h2>
+                            </div>
+                            <div 
+                                class="cpFormFieldBlockBody">
+                                <div
+                                    class="cpFormField">
+                                    <label 
+                                        class="outputNumeric">Total colony growth, times</label>
+                                    <span 
+                                        id="spanColonyGrowth" 
+                                        class="outputNumeric"></span>
+                                </div>
+                                <div
+                                    class="cpFormField">
+                                    <label 
+                                        class="outputNumeric">Avarage growth rate, times/time</label>
+                                    <span 
+                                        id="spanColonyGrowthTemp" 
+                                        class="outputNumeric"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div 
+                            class="cpFormFieldBlock">
+                            <span 
+                                onclick="selectTab('Simulation')">
+                                <img 
+                                    src="gear.svg" 
+                                    title="Switch to report format settings"
+                                    class="buttonIcon">
+                            </span>
+                            <span 
+                                id="spanHeadings"
+                                onclick="GLOBAL_CONTROL_PANEL.toggleHeadins()">
+                                <img
+                                    id="imgHeadings"
+                                    src="heading.svg" 
+                                    title="Copy data with headings"
+                                    class="buttonIcon"
+                                    style="background: rgb(188, 225, 188)">
+                            </span>
+                            <input 
+                                class="button" 
+                                type="button" 
+                                value="Copy log" 
+                                onclick="GLOBAL_FLASK_VIEW.copyMeasurements()"> 
+                            <input 
+                                class="button" 
+                                type="button" 
+                                value="Copy totals" 
+                                onclick="GLOBAL_FLASK_VIEW.copyTotals()"> 
+                        </div>
+    
+                    </div>
+                    
+
+                    <!-- Buttons -->
+                    <div 
+                        class="cpButtonBlock">
+                        <input 
+                            id="buttonSimulate"
+                            class="button" 
+                            type="button" 
+                            value="Simulate"
+                            onclick="GLOBAL_CONTROL_PANEL.lock();
+                                        GLOBAL_CONTROL_PANEL.displayCleaning();
+                                        window.setTimeout(()=>GLOBAL_CONTROL_PANEL.startSimulationTask(), 10)">
+                        <input 
+                            id="buttonStop" 
+                            class="button"
+                            type="button" 
+                            value="Terminate"
+                            onclick="GLOBAL_CONTROL_PANEL.terminateSimulationTask()">
+                            <span 
+                                id="spanStepNumber"></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            var GLOBAL_CONTROL_PANEL = null;
+            var GLOBAL_FLASK_VIEW = null;
+            start();
+        </script>
+        <img 
+            class="logo" 
+            src="alien01.jpg">
+        <img 
+            id="rabbit"
+            style="display: none"
+            class="rabbit" 
+            src="rabbit01.gif">
+        <div 
+            id="divHelp">
+            <div 
+                id="divHelpIcon">
+            <a 
+                target ="_blank" 
+                href="https://docs.google.com/document/d/1JXKLAqPy0w02euXq3nvCHIcBc4-Jer3yIqHklvBr7os/edit?usp=sharing">
+                <img 
+                    src="help.svg" 
+                    width="100%">
+            </a>
+            </div>
+        </div>
+    </body>
+</html>
